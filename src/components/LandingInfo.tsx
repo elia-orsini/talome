@@ -8,7 +8,7 @@ import TalomeLogo from "../../public/talome-logo.svg";
 export default function LandingInfo({ info }: { info: any }) {
   const windowWidth = useWindowWidth();
 
-  if (windowWidth && windowWidth < 769) {
+  if (windowWidth && windowWidth < 1024) {
     return (
       <div className="z-20 flex h-dvh w-screen flex-col p-[10px] uppercase">
         <div className="mx-auto w-full text-[11px] leading-[96%] tracking-[4%]">
