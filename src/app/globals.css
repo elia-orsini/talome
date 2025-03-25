@@ -47,10 +47,6 @@ body {
   transition-timing-function: linear !important;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 mux-player {
   --controls: none;
   pointer-events: none !important;
