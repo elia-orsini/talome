@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { urlFor } from "@/sanity/urlFor";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import gsap from "gsap";
@@ -12,6 +12,7 @@ import { SanityAsset } from "@sanity/image-url/lib/types/types";
 export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   const [centerIndex, setCenterIndex] = useState(0);
   const [change, setChange] = useState(true);
+  const centerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,27 +23,49 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   }, []);
 
   useGSAP(() => {
-    gsap.to("#center", {
+    gsap.killTweensOf(centerRef.current);
+
+    gsap.set(centerRef.current, {
+      opacity: 1,
+      x: 0,
+    });
+
+    const tl = gsap.timeline();
+
+    // Fade out and move left
+    tl.to(centerRef.current, {
       opacity: 0,
-      delay: 0,
+      x: -30,
       duration: 1,
       ease: "power2.inOut",
     });
 
-    gsap.to("#center", {
+    // Quick snap to right (hidden)
+    tl.to(centerRef.current, {
+      x: 30,
+      duration: 0.1,
+      ease: "power2.inOut",
+    });
+
+    // Change image and fade in
+    tl.to(centerRef.current, {
       onStart: () => {
         setCenterIndex((c) => c + 1);
       },
-      opacity: 100,
-      delay: 1,
-      duration: 2,
+      opacity: 1,
+      x: 0,
+      duration: 1,
       ease: "power2.inOut",
     });
   }, [change]);
 
   return (
     <div className="pointer-events-none absolute top-0 flex h-dvh w-screen flex-col">
-      <div id="center" className="sm:h-screenl absolute top-0 z-0 flex h-dvh w-screen select-none">
+      <div
+        id="center"
+        ref={centerRef}
+        className="sm:h-screenl absolute top-0 z-0 flex h-dvh w-screen select-none"
+      >
         {centerIndex != undefined && mediaList[centerIndex % mediaList.length] && (
           <Image
             key={`${mediaList[centerIndex % mediaList.length]._key}`}
