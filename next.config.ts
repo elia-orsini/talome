@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     domains: ["cdn.sanity.io", "image.mux.com"],
-    minimumCacheTTL: 259200, // 3 days
+    minimumCacheTTL: 345600, // 3 days
     formats: ["image/webp"],
     qualities: [75],
   },
