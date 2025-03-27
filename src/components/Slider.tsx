@@ -11,53 +11,58 @@ import { SanityAsset } from "@sanity/image-url/lib/types/types";
 
 export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   const [centerIndex, setCenterIndex] = useState(0);
-  const [change, setChange] = useState(true);
   const centerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setChange((c) => !c);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const animationRef = useRef<gsap.core.Timeline | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useGSAP(() => {
-    gsap.killTweensOf(centerRef.current);
+    if (animationRef.current) animationRef.current.kill();
 
-    gsap.set(centerRef.current, {
-      opacity: 1,
-      x: 0,
-    });
-
-    const tl = gsap.timeline();
-
-    // Fade out and move left
-    tl.to(centerRef.current, {
-      opacity: 0,
-      x: -30,
-      duration: 1,
-      ease: "power2.inOut",
-    });
-
-    // Quick snap to right (hidden)
-    tl.to(centerRef.current, {
-      x: 30,
-      duration: 0.1,
-      ease: "power2.inOut",
-    });
-
-    // Change image and fade in
-    tl.to(centerRef.current, {
-      onStart: () => {
-        setCenterIndex((c) => c + 1);
+    animationRef.current = gsap.timeline({
+      onComplete: () => {
+        // Restart the interval after animation completes
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => {
+          animationRef.current?.restart();
+        }, 2500);
       },
-      opacity: 1,
-      x: 0,
-      duration: 1,
-      ease: "power2.inOut",
     });
-  }, [change]);
+
+    gsap.set(centerRef.current, { opacity: 1, x: 0 });
+
+    animationRef.current
+      .to(centerRef.current, {
+        opacity: 0,
+        x: -30,
+        duration: 1,
+        ease: "power2.inOut",
+      })
+      .to(centerRef.current, {
+        x: 30,
+        duration: 0.1,
+        ease: "power2.inOut",
+      })
+      .to(centerRef.current, {
+        onStart: () => {
+          setCenterIndex((c) => (c + 1) % mediaList.length);
+        },
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+  }, []);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      animationRef.current?.restart();
+    }, 2500);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (animationRef.current) animationRef.current.kill();
+    };
+  }, []);
 
   return (
     <div className="pointer-events-none absolute top-0 flex h-dvh w-screen flex-col">
@@ -66,13 +71,11 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
         ref={centerRef}
         className="sm:h-screenl absolute top-0 z-0 flex h-dvh w-screen select-none"
       >
-        {centerIndex != undefined && mediaList[centerIndex % mediaList.length] && (
+        {mediaList[centerIndex] && (
           <Image
-            key={`${mediaList[centerIndex % mediaList.length]._key}`}
-            className={`mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300 sm:h-screen`}
-            src={urlFor(mediaList[centerIndex % mediaList.length].asset)
-              .height(1000)
-              .url()}
+            key={`${mediaList[centerIndex]._key}`}
+            className="mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300 sm:h-screen"
+            src={urlFor(mediaList[centerIndex].asset).height(1000).url()}
             width={0}
             height={0}
             sizes="1000px"
