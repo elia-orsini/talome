@@ -11,7 +11,7 @@
   font-synthesis: none !important;
   -webkit-font-smoothing: antialiased !important;
   font-weight: 700 !important;
-  letter-spacing: -1.8%;
+  letter-spacing: 0.036em;
   text-rendering: optimizeLegibility !important;
 }
 
