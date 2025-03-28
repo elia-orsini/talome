@@ -21,13 +21,13 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     if (animationRef.current) animationRef.current.kill();
 
     animationRef.current = gsap.timeline({
-      delay: 3500,
+      delay: 3900,
       onComplete: () => {
         // Restart the interval after animation completes
         if (intervalRef.current) clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
           animationRef.current?.restart();
-        }, 3500);
+        }, 3900);
       },
     });
 
@@ -52,7 +52,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       animationRef.current?.restart();
-    }, 3500);
+    }, 3900);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
