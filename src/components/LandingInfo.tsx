@@ -13,7 +13,7 @@ export default function LandingInfo({ info }: { info: any }) {
       <div className="z-20 flex h-dvh w-screen flex-col p-[10px] uppercase">
         <div className="mx-auto w-full text-[11px] leading-[96%] tracking-[4%]">
           <p>{info.statement}</p>
-          <p className="[&>a]:!text-[#BABABA]">
+          <p>
             <span>email: </span>
             <a href={`mailto:${info.email}`}>{info.email}</a>, <span>instagram: </span>
             <a href={`https://instagram.com/${info.instagram}`} target="_blank">
@@ -32,7 +32,7 @@ export default function LandingInfo({ info }: { info: any }) {
 
         <div className="mx-auto w-[470px] text-[12px] leading-[96%] tracking-[3.6%]">
           <p>{info.statement}</p>
-          <p className="[&>a]:!text-[#BABABA]">
+          <p>
             <span>email: </span>
             <a href={`mailto:${info.email}`}>{info.email}</a>, <span>instagram: </span>
             <a href={`https://instagram.com/${info.instagram}`} target="_blank">
