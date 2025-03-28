@@ -4,7 +4,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
 * {
@@ -13,11 +13,6 @@
   font-weight: 700 !important;
   letter-spacing: -1.8%;
   text-rendering: optimizeLegibility !important;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #000000;
 }
 
 body {
