@@ -3,7 +3,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import type { Viewport } from "next";
 
-const unica77Bold = localFont({ src: "./unica77-Bold.woff2" });
+const UniversLTStdBold = localFont({ src: "./UniversLTStd-Bold.woff2" });
 
 export const metadata: Metadata = {
   title: "Talome",
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${unica77Bold.className} no-scrollbar overflow-clip antialiased`}>
+      <body className={`${UniversLTStdBold.className} no-scrollbar overflow-clip antialiased`}>
         {children}
       </body>
     </html>
