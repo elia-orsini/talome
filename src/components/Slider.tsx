@@ -19,6 +19,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     if (animationRef.current) animationRef.current.kill();
 
     animationRef.current = gsap.timeline({
+      delay: 2500,
       onComplete: () => {
         // Restart the interval after animation completes
         if (intervalRef.current) clearInterval(intervalRef.current);
