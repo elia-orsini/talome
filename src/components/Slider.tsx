@@ -37,7 +37,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
       .to(centerRef.current, {
         opacity: 0,
         duration: 0.8,
-        ease: "power2.inOut",
+        ease: "power1.in",
       })
       .to(centerRef.current, {
         onStart: () => {
@@ -45,7 +45,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
         },
         opacity: 1,
         duration: 0.8,
-        ease: "power2.inOut",
+        ease: "power1.in",
       });
   }, []);
 
