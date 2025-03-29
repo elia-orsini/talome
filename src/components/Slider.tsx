@@ -66,7 +66,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
         <div
           id="center"
           ref={centerRef}
-          className="relative z-0 mt-auto flex h-[613px] w-screen select-none"
+          className="relative z-0 mt-auto flex h-4/5 w-screen select-none"
         >
           {mediaList[centerIndex] && (
             <Image
