@@ -2,107 +2,152 @@
 
 import Image from "next/image";
 import { urlFor } from "@/sanity/urlFor";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import "swiper/css";
 import "swiper/css/free-mode";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { SanityAsset } from "@sanity/image-url/lib/types/types";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper/modules";
 
 export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
-  const [centerIndex, setCenterIndex] = useState(0);
-  const centerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<gsap.core.Timeline | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const swiperRef = useRef<any>(null);
+  const swiperRefMobile = useRef<any>(null);
   const windowWidth = useWindowWidth();
 
-  useGSAP(() => {
-    if (animationRef.current) animationRef.current.kill();
+  const startAutoSlide = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
 
-    animationRef.current = gsap.timeline({
-      delay: 5000,
-      onComplete: () => {
-        // Restart the interval after animation completes
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(() => {
-          animationRef.current?.restart();
-        }, 5000);
-      },
-    });
+    intervalRef.current = setInterval(() => {
+      if (swiperRef.current) {
+        swiperRef.current.slideNext();
+      }
+      if (swiperRefMobile.current) {
+        swiperRefMobile.current.slideNext();
+      }
+    }, 5000);
+  };
 
-    gsap.set(centerRef.current, { opacity: 1, x: 0 });
+  const handleSlideChange = () => {
+    startAutoSlide();
+  };
 
-    animationRef.current
-      .to(centerRef.current, {
-        opacity: 0,
-        duration: 0.8,
-        ease: "power1.in",
-      })
-      .to(centerRef.current, {
-        onStart: () => {
-          setCenterIndex((c) => (c + 1) % mediaList.length);
-        },
-        opacity: 1,
-        duration: 0.8,
-        ease: "power1.in",
-      });
+  useEffect(() => {
+    startAutoSlide();
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      animationRef.current?.restart();
-    }, 5000);
+    const handleClick = (event: MouseEvent) => {
+      if (swiperRef.current) {
+        const clickX = event.clientX;
+        if (clickX < window.innerWidth / 2) {
+          swiperRef.current.slidePrev();
+          swiperRefMobile.current.slidePrev();
+        } else {
+          swiperRef.current.slideNext();
+          swiperRefMobile.current.slideNext();
+        }
+
+        startAutoSlide();
+      }
+    };
+
+    window.addEventListener("click", handleClick);
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (animationRef.current) animationRef.current.kill();
+      window.removeEventListener("click", handleClick);
     };
-  }, []);
+  }, [swiperRef, swiperRefMobile]);
 
   if (windowWidth && windowWidth < 1024) {
     return (
       <div className="pointer-events-none absolute top-0 flex h-dvh w-screen flex-col">
-        <div
-          id="center"
-          ref={centerRef}
-          className="relative z-0 mt-auto flex h-4/5 w-screen select-none"
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={0}
+          virtualTranslate={false}
+          loop={true}
+          modules={[FreeMode]}
+          freeMode={true}
+          onSlideChange={handleSlideChange}
+          onSwiper={(swiper) => {
+            swiperRefMobile.current = swiper;
+            startAutoSlide();
+          }}
+          speed={300}
+          className="pointer-events-none h-dvh w-screen"
+          centeredSlides={true}
+          key="unique-key-desktop"
         >
-          {mediaList[centerIndex] && (
-            <Image
-              key={`${mediaList[centerIndex]._key}`}
-              className="mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300"
-              src={urlFor(mediaList[centerIndex].asset).height(1000).url()}
-              fill
-              sizes="1000px"
-              style={{ objectFit: "cover" }}
-              alt=""
-            />
+          {mediaList.map(
+            (media) =>
+              media && (
+                <SwiperSlide key={`${media._key}`} className="z-0 !flex h-dvh w-screen">
+                  <div className="relative z-0 mt-auto h-4/5 w-screen">
+                    <Image
+                      className="mx-auto w-screen opacity-30 transition-opacity duration-300"
+                      src={urlFor(media.asset).height(1000).url()}
+                      fill
+                      sizes="1000px"
+                      style={{ objectFit: "cover" }}
+                      alt=""
+                    />
+                  </div>
+                </SwiperSlide>
+              )
           )}
-        </div>
+        </Swiper>
       </div>
     );
   } else {
     return (
       <div className="pointer-events-none absolute top-0 flex h-dvh w-screen flex-col">
-        <div
-          id="center"
-          ref={centerRef}
-          className="absolute top-0 z-0 flex h-dvh w-screen select-none sm:h-screen"
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={0}
+          virtualTranslate={false}
+          loop={true}
+          modules={[FreeMode]}
+          freeMode={true}
+          onSlideChange={handleSlideChange}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+            startAutoSlide();
+          }}
+          speed={400}
+          className="no-scrollbar !h-screen"
+          centeredSlides={true}
+          key="unique-key-desktop"
         >
-          {mediaList[centerIndex] && (
-            <Image
-              key={`${mediaList[centerIndex]._key}`}
-              className="mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300 sm:h-screen"
-              src={urlFor(mediaList[centerIndex].asset).height(1000).url()}
-              width={0}
-              height={0}
-              sizes="1000px"
-              style={{ objectFit: "contain" }}
-              alt=""
-            />
-          )}
-        </div>
+          {mediaList.map((media) => (
+            <SwiperSlide
+              key={media._key}
+              className="absolute top-0 z-0 flex h-dvh w-screen select-none sm:h-screen"
+            >
+              {media && (
+                <Image
+                  key={`${media._key}`}
+                  className="mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300 sm:h-screen"
+                  src={urlFor(media.asset).height(1000).url()}
+                  width={0}
+                  height={0}
+                  sizes="1000px"
+                  style={{ objectFit: "contain" }}
+                  alt=""
+                />
+              )}
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     );
   }
