@@ -156,7 +156,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
                   />
                   <div className="pointer-events-none relative mt-auto h-screen w-screen">
                     <Image
-                      className={`mx-auto w-max opacity-30 transition-opacity duration-700 ${hovered ? "opacity-100" : ""}`}
+                      className={`mx-auto w-max transition-opacity duration-700 ${hovered ? "opacity-100" : "opacity-30"}`}
                       src={urlFor(media.asset).height(1000).url()}
                       fill
                       sizes="1000px"
