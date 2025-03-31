@@ -104,7 +104,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
             (media) =>
               media && (
                 <SwiperSlide key={`${media._key}`} className="z-0 !flex h-dvh w-screen">
-                  <div className="relative z-0 mt-auto h-4/5 w-screen">
+                  <div className="relative z-0 mt-auto h-dvh w-screen">
                     <Image
                       className="mx-auto w-screen opacity-30 transition-opacity duration-300"
                       src={urlFor(media.asset).height(1000).url()}
