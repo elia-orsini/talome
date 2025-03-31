@@ -75,7 +75,7 @@ export default function LandingInfo({ info }: { info: any }) {
     );
   } else {
     return (
-      <div className="pointer-events-none z-20 my-auto grid grid-cols-2 pt-10 uppercase">
+      <div className="z-20 my-auto grid grid-cols-2 pt-10 uppercase">
         <Image className="ml-[10px]" alt="Talome Logo" src={TalomeLogo} width="633" height="41" />
 
         <div className="mx-auto mt-[1px] w-[470px] text-[12px] leading-[96%] tracking-[3.6%]">

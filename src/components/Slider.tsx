@@ -2,23 +2,21 @@
 
 import Image from "next/image";
 import { urlFor } from "@/sanity/urlFor";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import { SanityAsset } from "@sanity/image-url/lib/types/types";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
-import { cropRatio } from "@/sanity/cropRatio";
-import useWindowHeight from "@/hooks/useWindowHeight";
 
 export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const swiperRef = useRef<any>(null);
   const swiperRefMobile = useRef<any>(null);
   const windowWidth = useWindowWidth();
-  const windowHeight = useWindowHeight();
-  const [hovered, setHovered] = useState<boolean>(false);
+  // const windowHeight = useWindowHeight();
+  // const [hovered, setHovered] = useState<boolean>(false);
 
   const startAutoSlide = () => {
     if (intervalRef.current) {
@@ -137,7 +135,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
           }}
           speed={400}
           allowTouchMove={false}
-          className={`h-dvh w-screen ${hovered ? "!z-50" : ""}`}
+          className={`h-dvh w-screen`}
           centeredSlides={true}
           key="unique-key-desktop"
         >
@@ -145,7 +143,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
             (media) =>
               media && (
                 <SwiperSlide key={`${media._key}`} className={"!flex h-dvh w-screen"}>
-                  <div
+                  {/* <div
                     className="absolute left-1/2 top-1/2 z-10 mx-auto -translate-x-1/2 -translate-y-1/2 transform"
                     onMouseEnter={() => setHovered(true)}
                     onMouseLeave={() => setHovered(false)}
@@ -153,10 +151,10 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
                       width: cropRatio(media.asset._ref) * windowHeight!,
                       height: windowHeight!,
                     }}
-                  />
+                  /> */}
                   <div className="pointer-events-none relative mt-auto h-screen w-screen">
                     <Image
-                      className={`mx-auto w-max transition-opacity duration-700 ${hovered ? "opacity-100" : "opacity-30"}`}
+                      className={`mx-auto w-max opacity-30 transition-opacity duration-700`}
                       src={urlFor(media.asset).height(1000).url()}
                       fill
                       sizes="1000px"
