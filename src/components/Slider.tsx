@@ -2,19 +2,23 @@
 
 import Image from "next/image";
 import { urlFor } from "@/sanity/urlFor";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import { SanityAsset } from "@sanity/image-url/lib/types/types";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
+import { cropRatio } from "@/sanity/cropRatio";
+import useWindowHeight from "@/hooks/useWindowHeight";
 
 export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const swiperRef = useRef<any>(null);
   const swiperRefMobile = useRef<any>(null);
   const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
+  const [hovered, setHovered] = useState<boolean>(false);
 
   const startAutoSlide = () => {
     if (intervalRef.current) {
@@ -49,12 +53,20 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     const handleClick = (event: MouseEvent) => {
       if (swiperRef.current) {
         const clickX = event.clientX;
-        if (clickX < window.innerWidth / 2) {
-          swiperRef.current.slidePrev();
-          swiperRefMobile.current.slidePrev();
+        if (clickX < windowWidth! / 2) {
+          if (swiperRef.current) {
+            swiperRef.current.slidePrev();
+          }
+          if (swiperRefMobile.current) {
+            swiperRefMobile.current.slidePrev();
+          }
         } else {
-          swiperRef.current.slideNext();
-          swiperRefMobile.current.slideNext();
+          if (swiperRef.current) {
+            swiperRef.current.slideNext();
+          }
+          if (swiperRefMobile.current) {
+            swiperRefMobile.current.slideNext();
+          }
         }
 
         startAutoSlide();
@@ -66,7 +78,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     return () => {
       window.removeEventListener("click", handleClick);
     };
-  }, [swiperRef, swiperRefMobile]);
+  }, [swiperRef, swiperRefMobile, windowWidth]);
 
   if (windowWidth && windowWidth < 1024) {
     return (
@@ -110,7 +122,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     );
   } else {
     return (
-      <div className="pointer-events-none absolute top-0 flex h-dvh w-screen flex-col">
+      <div className="absolute top-0 flex h-dvh w-screen flex-col">
         <Swiper
           slidesPerView={1}
           spaceBetween={0}
@@ -124,29 +136,37 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
             startAutoSlide();
           }}
           speed={400}
-          className="no-scrollbar !h-screen"
+          allowTouchMove={false}
+          className={`h-dvh w-screen ${hovered ? "!z-50" : ""}`}
           centeredSlides={true}
           key="unique-key-desktop"
         >
-          {mediaList.map((media) => (
-            <SwiperSlide
-              key={media._key}
-              className="absolute top-0 z-0 flex h-dvh w-screen select-none sm:h-screen"
-            >
-              {media && (
-                <Image
-                  key={`${media._key}`}
-                  className="mx-auto mt-auto w-screen opacity-30 transition-opacity duration-300 sm:h-screen"
-                  src={urlFor(media.asset).height(1000).url()}
-                  width={0}
-                  height={0}
-                  sizes="1000px"
-                  style={{ objectFit: "contain" }}
-                  alt=""
-                />
-              )}
-            </SwiperSlide>
-          ))}
+          {mediaList.map(
+            (media) =>
+              media && (
+                <SwiperSlide key={`${media._key}`} className={"!flex h-dvh w-screen"}>
+                  <div
+                    className="absolute left-1/2 top-1/2 z-10 mx-auto -translate-x-1/2 -translate-y-1/2 transform"
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                    style={{
+                      width: cropRatio(media.asset._ref) * windowHeight!,
+                      height: windowHeight!,
+                    }}
+                  />
+                  <div className="pointer-events-none relative mt-auto h-screen w-screen">
+                    <Image
+                      className={`mx-auto w-max opacity-30 transition-opacity duration-700 ${hovered ? "opacity-100" : ""}`}
+                      src={urlFor(media.asset).height(1000).url()}
+                      fill
+                      sizes="1000px"
+                      style={{ objectFit: "contain" }}
+                      alt=""
+                    />
+                  </div>
+                </SwiperSlide>
+              )
+          )}
         </Swiper>
       </div>
     );
