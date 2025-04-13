@@ -1,1 +1,1 @@
-export const fetchOptions = { next: { revalidate: 14400 } }; // 4 hours
+export const fetchOptions = { next: { revalidate: 28800 } }; // 8 hours
