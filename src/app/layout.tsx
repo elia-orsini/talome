@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     title: "Talome",
     description:
       "Talome is a talent agency dedicated to representing and elevating exceptional talent. We build lasting relationships and shape impactful creative moments. Providing structure and support, we help talent grow and succeed. Through a refined approach, we cultivate talent with purpose. Talome facilitates talent with clarity and direction.",
+    siteName: "Talome",
+    url: "https://www.talome.com/",
     images: [
       {
         url: "/talome.png",
