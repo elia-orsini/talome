@@ -110,6 +110,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
                       sizes="1000px"
                       style={{ objectFit: "cover" }}
                       alt=""
+                      unoptimized
                     />
                   </div>
                 </SwiperSlide>
@@ -143,15 +144,6 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
             (media) =>
               media && (
                 <SwiperSlide key={`${media._key}`} className={"!flex h-dvh w-screen"}>
-                  {/* <div
-                    className="absolute left-1/2 top-1/2 z-10 mx-auto -translate-x-1/2 -translate-y-1/2 transform"
-                    onMouseEnter={() => setHovered(true)}
-                    onMouseLeave={() => setHovered(false)}
-                    style={{
-                      width: cropRatio(media.asset._ref) * windowHeight!,
-                      height: windowHeight!,
-                    }}
-                  /> */}
                   <div className="pointer-events-none relative mt-auto h-screen w-screen">
                     <Image
                       className={`mx-auto w-max opacity-30 transition-opacity duration-700`}
@@ -160,6 +152,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
                       sizes="1000px"
                       style={{ objectFit: "contain" }}
                       alt=""
+                      unoptimized
                     />
                   </div>
                 </SwiperSlide>
