@@ -120,7 +120,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
     );
   } else {
     return (
-      <div className="absolute top-0 flex h-dvh w-screen flex-col">
+      <div className="pointer-events-none absolute top-0 flex h-dvh w-screen select-none flex-col">
         <Swiper
           slidesPerView={1}
           spaceBetween={0}
