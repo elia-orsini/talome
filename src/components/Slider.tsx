@@ -30,7 +30,7 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
       if (swiperRefMobile.current) {
         swiperRefMobile.current.slideNext();
       }
-    }, 5000);
+    }, 3000);
   };
 
   const handleSlideChange = () => {
@@ -48,6 +48,17 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
   }, []);
 
   useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (windowWidth) {
+        const mouseX = event.clientX;
+        if (mouseX < windowWidth / 2) {
+          document.body.style.cursor = "w-resize";
+        } else {
+          document.body.style.cursor = "e-resize";
+        }
+      }
+    };
+
     const handleClick = (event: MouseEvent) => {
       if (swiperRef.current) {
         const clickX = event.clientX;
@@ -71,10 +82,13 @@ export default function Slider({ mediaList }: { mediaList: SanityAsset[] }) {
       }
     };
 
+    window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("click", handleClick);
 
     return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("click", handleClick);
+      document.body.style.cursor = "";
     };
   }, [swiperRef, swiperRefMobile, windowWidth]);
 
